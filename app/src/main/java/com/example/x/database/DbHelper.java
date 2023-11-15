@@ -10,7 +10,7 @@ public class DbHelper extends SQLiteOpenHelper {
 public static final String dbName ="dataX";
 
     public DbHelper(@Nullable Context context) {
-        super(context, dbName, null, 4);
+        super(context, dbName, null, 8);
     }
 
     @Override
@@ -20,6 +20,8 @@ public static final String dbName ="dataX";
                 "    name TEXT    NOT NULL\n" +
                 ");";
         db.execSQL(tbType);
+        String dataType = "insert into type values (1,'Phòng Đơn'),(2,'Phòng Đôi'),(3,'Phòng Gia Đình')";
+        db.execSQL(dataType);
         String tbRoom = "CREATE TABLE room (\n" +
                 "    id     INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                 "    idType INTEGER REFERENCES type (id) \n" +
@@ -46,7 +48,7 @@ public static final String dbName ="dataX";
                 "    password TEXT    NOT NULL\n" +
                 ");";
         db.execSQL(tbReceptionist);
-        String dataReceptionist ="insert into receptionist values (1,'Nguyễn Ngọc Linh','0968243403','linhruoifly1@gmail.com',1997,'admin','admin')";
+        String dataReceptionist ="insert into receptionist values (1,'Nguyễn Ngọc Linh','linhruoifly1@gmail.com','admin','admin')";
         db.execSQL(dataReceptionist);
         String tbService = "CREATE TABLE service (\n" +
                 "    id       INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
@@ -71,10 +73,11 @@ public static final String dbName ="dataX";
                 "    sumCost        INTEGER NOT NULL\n" +
                 ");";
         String tbHardBill = "CREATE TABLE hardBill (\n" +
+                "    id             INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                 "    idBill         INTEGER REFERENCES bill (id),\n" +
                 "    idRoom         INTEGER REFERENCES room (id),\n" +
                 "    quantityPeople INTEGER NOT NULL\n" +
-                ");";
+                ");\n";
         db.execSQL(tbHardBill);
         db.execSQL(tbBill);
     }
