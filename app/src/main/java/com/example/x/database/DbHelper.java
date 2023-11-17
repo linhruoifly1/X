@@ -46,7 +46,7 @@ public static final String dbName ="dataX";
                 "    password TEXT    NOT NULL\n" +
                 ");";
         db.execSQL(tbReceptionist);
-        String dataReceptionist ="insert into receptionist values (1,'Nguyễn Ngọc Linh','0968243403','linhruoifly1@gmail.com',1997,'admin','admin')";
+        String dataReceptionist ="insert into receptionist values (1,'Nguyễn Ngọc Linh','linhruoifly1@gmail.com','admin','admin')";
         db.execSQL(dataReceptionist);
         String tbService = "CREATE TABLE service (\n" +
                 "    id       INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
