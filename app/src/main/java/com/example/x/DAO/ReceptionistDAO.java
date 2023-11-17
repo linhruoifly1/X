@@ -2,6 +2,7 @@ package com.example.x.DAO;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -12,8 +13,10 @@ import java.util.ArrayList;
 
 public class ReceptionistDAO {
     private final DbHelper dbHelper;
+    SharedPreferences sharedPreferences;
     public ReceptionistDAO(Context context){
         dbHelper = new DbHelper(context);
+         sharedPreferences = context.getSharedPreferences("receptionist", Context.MODE_PRIVATE);
     }
     public Receptionist getUsername(String username){
         String sql = "select * from receptionist where username=?";
@@ -52,14 +55,32 @@ public class ReceptionistDAO {
     public boolean checkLogin(String username,String password){
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         Cursor cursor = database.rawQuery("select * from receptionist where username=? and password=?",new String[]{username,password});
-        int row = cursor.getCount();
-        return row>0;
+        if (cursor.getCount() > 0){
+            cursor.moveToFirst();
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("id", cursor.getString(0));
+            editor.putString("name", cursor.getString(1));
+            editor.putString("email",cursor.getString(2));
+            editor.putString("username", cursor.getString(3));
+            editor.putString("password", cursor.getString(4));
+            editor.commit();
+            return  true;
+
+        }
+        return false;
     }
-    public boolean changePassword(Receptionist receptionist){
+    public int changePassword(String username,String pass, String newPass){
         ContentValues values = new ContentValues();
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        values.put("password",receptionist.getPassword());
-        int row = database.update("receptionist",values,"username=?",new String[]{receptionist.getUsername()});
-        return row>0;
+        Cursor cursor = database.rawQuery("SELECT * FROM receptionist WHERE username = ? AND password = ?",new String[]{username, pass});
+        if (cursor.getCount() > 0){
+            values.put("password",newPass);
+            long check = database.update("receptionist",values,"id = ?",new String[]{username});
+            if (check == -1){
+                return -1; //thất bại
+            }
+            return 1; // đổi mật khẩu thành công
+        }
+        return 0; // đổi thất bại do mật khẩu cũ sai
     }
 }
